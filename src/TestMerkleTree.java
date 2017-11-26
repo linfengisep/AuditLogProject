@@ -51,7 +51,7 @@ public class TestMerkleTree{
 
       // parent node hex value
       String shaValue = getSHAValue(left + right);
-      newTxList.add(shaValue);
+      newTxList.add(shaValue);//all the hash value of the nodes;
       index++;
     }
     return newTxList;
@@ -64,6 +64,12 @@ public class TestMerkleTree{
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(str.getBytes());
             byteTree = md.digest();
+
+            System.out.println("the byteTree[] length is:"+byteTree.length);
+            for(byte b:byteTree){
+              System.out.println("byte is:"+b);
+            }
+
             StringBuilder sb = new StringBuilder(2 * byteTree.length);
             for(byte b: byteTree) {
               sb.append(String.format("%02x", b&0xff) );
@@ -92,7 +98,7 @@ public class TestMerkleTree{
 
       TestMerkleTree merkleTree = new TestMerkleTree(testList);
       merkleTree.merkle_tree();
-      System.out.println("root : " + merkleTree.getRoot());
+      System.out.println("hash of root : " + merkleTree.getRoot());
     }
 
 }

@@ -34,7 +34,21 @@ public class MerkleTree {
    public List<String> eventList=new ArrayList<String>();
 
 
-   
+   //function contructor for leaf
+   public MerkleTree(String event){
+   if (currentTree.leftSubTree==null && currentTree.rightSubTree==null)
+   isLeaf = true;
+    //h(i)=SHA256(0 x00|utf8(e_i));
+    makeEventHashed(event);
+   }
+
+   //function contructor for internal node;
+   public MerkleTree(MerkleTree right,MerkleTree left){
+      if (currentTree.leftSubTree=null || currentTree.rightSubTree !=null)
+      {isLeaf = false;
+      this.hash = this.leftSubTree.hash+this.rightSubTree.hash;
+      }
+   }
 
    /*Hash function
    *@param single event;
@@ -44,15 +58,17 @@ public class MerkleTree {
       try{
           MessageDigest md = MessageDigest.getInstance("SHA-256");
           md.update(event.getBytes());
-          hash = md.digest();/*
+          hash = md.digest();
+/*
           System.out.println("the byteTree[] length is:"+byteTree.length);
           for(byte b:byteTree){
             System.out.println("byte is:"+b);
           }
-   */
+*/
           StringBuilder sb = new StringBuilder(2 * hash.length);
           for(byte b: hash) {
-            sb.append(String.format("%02x", b&0xff) );
+            sb.append(String.format("%x", b&0xff) );
+            //sb.append(String.format("%x", b&0xff) );
           }
           return sb.toString();
       } catch (Exception e) {
