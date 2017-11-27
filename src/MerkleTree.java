@@ -31,23 +31,18 @@ public class MerkleTree {
    *The digest algorithm
    *public final MessageDigest md;
    */
-   public List<String> eventList=new ArrayList<String>();
-
-
    //function contructor for leaf
    public MerkleTree(String event){
-   if (currentTree.leftSubTree==null && currentTree.rightSubTree==null)
-   isLeaf = true;
     //h(i)=SHA256(0 x00|utf8(e_i));
     makeEventHashed(event);
    }
 
    //function contructor for internal node;
-   public MerkleTree(MerkleTree right,MerkleTree left){
-      if (currentTree.leftSubTree=null || currentTree.rightSubTree !=null)
-      {isLeaf = false;
-      this.hash = this.leftSubTree.hash+this.rightSubTree.hash;
-      }
+   public MerkleTree(MerkleTree right,MerkleTree left){}
+
+   //function contructor for adding node;
+   public MerkleTree(String event,int idEvent){
+
    }
 
    /*Hash function
@@ -59,12 +54,6 @@ public class MerkleTree {
           MessageDigest md = MessageDigest.getInstance("SHA-256");
           md.update(event.getBytes());
           hash = md.digest();
-/*
-          System.out.println("the byteTree[] length is:"+byteTree.length);
-          for(byte b:byteTree){
-            System.out.println("byte is:"+b);
-          }
-*/
           StringBuilder sb = new StringBuilder(2 * hash.length);
           for(byte b: hash) {
             sb.append(String.format("%x", b&0xff) );
@@ -76,37 +65,10 @@ public class MerkleTree {
       }
       return "";
    }
-   /*import file function
-   *@param file path in my ordi;
-   */
-   public void readFile(String path){
-      File file=new File(path);
-      FileInputStream fis=null;
-      BufferedInputStream fileBS=null;
-      DataInputStream dis=null;
-
-      try{
-         fis=new FileInputStream(file);
-         fileBS=new BufferedInputStream(fis);
-         dis=new DataInputStream(fileBS);
-            while(dis.available() !=0){
-                 //System.out.println("we r here:"+dis.readLine());
-                  list.add(dis.readLine());
-                 }
-                     fis.close();
-                     fileBS.close();
-                     dis.close();
-            }catch(FileNotFoundException e){
-            e.printStackTrace();
-         }catch(IOException e){
-         e.printStackTrace();
-         }
-   }
 
    /**
    * Adds two child subtrees to this Merkle Tree.
    */
-/*
    public void add(final MerkleTree leftTree, final MerkleTree rightTree)
    {
       this.leftTree = leftTree;
@@ -118,19 +80,22 @@ public class MerkleTree {
       md.update(leftTree.digest());
       digest = md.digest(rightTree.digest());
    }
-*/
 
-//test function;
-   public void showListContent(List<String> list){
-   for(int i=0;i<eventList.size();i++)
-         System.out.println("Voilà les hashs des évènements:"+eventList.get(i).toString()+": "+makeEventHashed(eventList.get(i)));
+   public int getValMax(){
+      return this.begin;
    }
-
+   public int getValMim(){
+      return this.end;
+   }
+//test function;
+   public void showEventMap(Map<Integer,String> eventMap){
+      System.out.println("the size of this map is :"+eventMap.size());
+   }
+/*
    //main function take the input text file; compute its merkleTree; training each line as new event;
    public static void main(String[]args){
-   String path="/Users/linfengwang/Desktop/II.3502_DistributedArchitecture/TP4/src/traces/DS1-trace.txt";
+   String path="/Users/linfengwang/Desktop/II.3502_DistributedArchitecture/TP4/src/trace1.txt";
    MerkleTree aTree=new MerkleTree();
-   aTree.readFile(path);
-   aTree.showListContent(aTree.eventList);
    }
+*/
 }
