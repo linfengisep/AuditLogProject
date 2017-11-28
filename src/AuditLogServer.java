@@ -6,8 +6,8 @@ import java.util.List;
 import java.io.FileNotFoundException;
 
 public class AuditLogServer {
-   long treeDepth=-1;
-   MerkleTree currentNodeOfMainTree;
+   long treeDepth=0;
+   MerkleTree currentNodeOfMainTree=null;
    int idLastLeaf=0;
 
    //Constructor 1 AuditLogServer;
@@ -45,13 +45,12 @@ public class AuditLogServer {
     buildTree(merkleQueue);
   }
 
-   public MerkleTree buildTree(Queue<MerkleTree> merkleTree){
+   public void buildTree(Queue<MerkleTree> merkleTree){
       while(!merkleTree.isEmpty()){
-      MerkleTree newNode=merkleTree.poll();
+      MerkleTree newNode=merkleTree.poll();//remove one element out;
       addLeaf(currentNodeOfMainTree,newNode,null);
       idLastLeaf++;
       }
-      return currentNodeOfMainTree;
    }
 
    public void addLeaf(MerkleTree currentNodeOfMainTree, MerkleTree newNode,MerkleTree parent){
@@ -63,24 +62,21 @@ public class AuditLogServer {
       break;
 
       MerkleNode newNode;
-      int nbEventsOfMainTree = 1 + currentNodeOfMainTree.getValMax() - currentNodeOfMainTree.getValMin();
-      while (nbEventsOfMainTree != 1 && nbEventsOfMainTree%2 == 0) {
-             nbEventsOfMainTree /= 2;
+      int nbEvents = 1 + currentNodeOfMainTree.getValMax() - currentNodeOfMainTree.getValMin();
+      while (nbEvents != 1 && nbEvents%2 == 0) {
+             nbEvents /= 2;
       }
       // SI 1 : plein
       // SINON A COMPLETER
 
-      if(nbEventsOfMainTree == 1) {
-         // System.out.println("On set");
-         // Notre arbre est plein
-         newNode = new MerkleNode(currentNodeOfMainTree, newLeaf);
+      if(nbEvents == 1) {
+         newNode = new MerkleNode(currentNodeOfMainTree, newNode);
          if (parent != null) {
               parent.setFilsDroit(newNode);
          }
          else {
-              // System.out.println("Nouvelle currentNode");
-              this.currentNode = newNode;
-              this.treeLevel += 1;
+              this.currentNodeOfMainTree = newNode;
+              this.treeDepth += 1;
          }
          return;
       }
