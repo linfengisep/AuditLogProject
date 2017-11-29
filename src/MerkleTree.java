@@ -13,11 +13,11 @@ import java.security.MessageDigest;
 
 public class MerkleTree {
 
-   public MerkleTree parentTree=null;
+   public MerkleTree parent=null;
    public MerkleTree currentTree=null;
    //pointer? to the left and right subtree;
-   public MerkleTree leftSubTree=null;
-   public MerkleTree rightSubTree=null;
+   public MerkleTree left=null;
+   public MerkleTree right=null;
 
    //begining and ending index of the log;
    public int beginIndex=0,endIndex=0;//how to assign the index to tree?
@@ -37,8 +37,13 @@ public class MerkleTree {
     makeEventHashed(event);
    }
 
-   //function contructor for internal node;
-   public MerkleTree(MerkleTree right,MerkleTree left){}
+   //function contructor for internal node;for buiding a parent node;
+   public MerkleTree(MerkleTree node1,MerkleTree node2){
+      //for buiding a parent node;
+      this.left=node1;
+      this.right=node2;
+      this.parent=node1+node2;h(1,2)
+   }
 
    //function contructor for adding node;
    public MerkleTree(String event,int idEvent){
@@ -84,18 +89,17 @@ public class MerkleTree {
    public int getValMax(){
       return this.begin;
    }
+
    public int getValMim(){
       return this.end;
    }
-//test function;
+
+   public void setParentToLeftChild(){
+      this.left=this.currentTree
+   }
+
    public void showEventMap(Map<Integer,String> eventMap){
       System.out.println("the size of this map is :"+eventMap.size());
    }
-/*
-   //main function take the input text file; compute its merkleTree; training each line as new event;
-   public static void main(String[]args){
-   String path="/Users/linfengwang/Desktop/II.3502_DistributedArchitecture/TP4/src/trace1.txt";
-   MerkleTree aTree=new MerkleTree();
-   }
-*/
+   //String path="/Users/linfengwang/Desktop/II.3502_DistributedArchitecture/TP4/src/trace1.txt";
 }

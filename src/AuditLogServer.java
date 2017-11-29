@@ -7,9 +7,10 @@ import java.io.FileNotFoundException;
 
 public class AuditLogServer {
    long treeDepth=0;
-   MerkleTree currentNodeOfMainTree=null;
+   MerkleTree currentNode=null;
+   MerkleTree root=null;
    int idLastLeaf=0;
-
+   int odd=0xFFFFFFFF;
    //Constructor 1 AuditLogServer;
   public AuditLogServer(String inputFilePath) {
     Queue<MerkleTree> merkleQueue = new LinkedList<MerkleTree>();
@@ -48,46 +49,64 @@ public class AuditLogServer {
    public void buildTree(Queue<MerkleTree> merkleTree){
       while(!merkleTree.isEmpty()){
       MerkleTree newNode=merkleTree.poll();//remove one element out;
-      addLeaf(currentNodeOfMainTree,newNode,null);
+      getTreeDepth();
+      addLeaf(currentNode,newNode,null);
       idLastLeaf++;
+      //if(idLastLeaf)root=newNode;
       }
    }
 
-   public void addLeaf(MerkleTree currentNodeOfMainTree, MerkleTree newNode,MerkleTree parent){
-      if(currentNodeOfMainTree==null){
-      currentNodeOfMainTree=newNode;
+   public void addLeaf(MerkleTree currentNode, MerkleTree newLeaf,MerkleTree parent){
+      if(currentNode==null){
+      currentNode=newLeaf;
       idLastLeaf = 1;
       treeDepth = 1;
       }
       break;
 
       MerkleNode newNode;
-      int nbEvents = 1 + currentNodeOfMainTree.getValMax() - currentNodeOfMainTree.getValMin();
-      while (nbEvents != 1 && nbEvents%2 == 0) {
-             nbEvents /= 2;
+      //binary operations to retrieve the last bit, if it is 1, then the idLastLeaf is odd;
+      int impair= odd & idLastLeaf;
+      if(impair == 1){
+            //build a parent node, and define the parent's left and right node at the same time;
+            newNode = new MerkleNode(currentNode, newLeaf);
+            newNode.parent=currentNode.parent//maybe ??
+            //reach the bottom;
+            if(treeDepth<getCurrentTreeCapacity() && treeDepth >getCurrentTreeCapacity()-2){
+              this.currentNode = root;
+            }else{//not reach bottom
+                  addLeaf(currentNode.setParentToLeftChild(), newLeaf, newNode);
+                 }
+                  //even,and full tree,then go up
+            }else if(idLastLeaf==getCurrentTreeCapacity()){
+            // System.out.println("On monte");
+            newNode = new MerkleNode(currentNode, newLeaf);
+            root=newNode;
+            }else {
+            //even, but not full tree;
+            }
       }
-      // SI 1 : plein
-      // SINON A COMPLETER
+      public void updateTree(){
 
-      if(nbEvents == 1) {
-         newNode = new MerkleNode(currentNodeOfMainTree, newNode);
-         if (parent != null) {
-              parent.setFilsDroit(newNode);
+      }
+
+      // a call back to calculate the tree depth;
+      private final Thread getTreeDepth = new Thread(() -> {
+         int n=1;
+         int time=1;
+         while(n< idLastLeaf){
+            n * =2;
+            time++;
          }
-         else {
-              this.currentNodeOfMainTree = newNode;
-              this.treeDepth += 1;
+         treeDepth=time;
+      });
+
+      public int getCurrentTreeCapacity(){
+         int capacity=1;
+         for(int i=1;i<treeDepth-1;i++){
+            capacity*=2;
          }
-         return;
+         return capacity;
       }
-      else {
-         // System.out.println("On descend");
-         addLeaf(currentNodeOfMainTree.getFilsDroit(), newLeaf, currentNodeOfMainTree);
-         currentNodeOfMainTree.updateNode();
-      }
-   }
 
-   public void updateTree(){
-
-   }
 }
