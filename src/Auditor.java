@@ -100,4 +100,9 @@ public class Auditor {
     return Integer.highestOneBit(index);
   }
 
+   public int testMehode(){
+   int i=10;
+   i++;
+   return i;
+   }
 }
