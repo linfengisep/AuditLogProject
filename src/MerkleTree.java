@@ -5,11 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-
 import java.util.*;
 import java.security.MessageDigest;
-
-
 
 public class MerkleTree {
 
